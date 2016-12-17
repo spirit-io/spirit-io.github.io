@@ -1,37 +1,113 @@
-## Welcome to GitHub Pages
+# spirit.io
 
-You can use the [editor on GitHub](https://github.com/spirit-io/spirit-io.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+spirit.io is an extensible Node.JS ORM framework written with Typescript.  
+Its goal is to simplify complex application development by writing simple decorated model classes.  
+This classes will be translated by decorators and schemas compiler analysis in order to produce models schemas that would be used by spirit.io connectors...  
+At the end, the framework will produce CRUD operations usable from server side using all the power of Typescript language, but also from front-end applications a REST API with Express routes will be automatically generated.  
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## Getting Started
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+First of all, spirit.io is a framework, so you need to create your own project to be able to use it.  
+Then, it's important to understand that spirit.io uses [f-promise](https://github.com/Sage/f-promise) API, so please take a look to its documentation to learn all the benefits you will encounter.  
 
-```markdown
-Syntax highlighted code block
+When using `spirit.io` with `Typescript`, the Typescript compilation is done by common typescript compiler `tsc`.  
+But the first entry point is that you need to create a standard Javascript file.  
 
-# Header 1
-## Header 2
-### Header 3
+`index.js`:  
 
-- Bulleted
-- List
+```js
+"use strict";
+const fpromise = require('f-promise');
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+let MyApp = require('./lib/app').MyApp;
+let app = new MyApp().init();
+app.on('initialized', () => {
+    fpromise.run(() => {
+        app.start();
+    }).catch(err => {
+        console.error(err.stack);
+    });
+});
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+`app.ts`:  
 
-### Jekyll Themes
+```ts
+import { Server } from 'spirit.io/lib/application';
+import { MongodbConnector } from 'spirit.io-mongodb-connector/lib/connector';
+import { run } from 'f-promise';
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/spirit-io/spirit-io.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+export class MyApp extends Server {
+    constructor(config?: any) {
+        if (!config) config = require('./config').config;
+        super(config);
+    }
 
-### Support or Contact
+    init() {
+        run(() => {
+            console.log("\n========== Initialize server begins ============");
+            
+            // create a connector. Here mongodb for instance
+            let mongoConnector = new MongodbConnector(this.config.connectors.mongodb);
+            this.addConnector(mongoConnector);
+            console.log("Mongo connector config: " + JSON.stringify(mongoConnector.config, null, 2));
+            
+            // register your own models
+            this.contract.registerModelsByPath(path.resolve(path.join(__dirname, './models')));
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+            // load models
+            super.init();
+            this.on('initialized', () => {
+                // Do your stuff here !!!
+                console.log("========== Server initialized ============\n");
+            });
+
+        }).catch(err => {
+            console.error(err.stack);
+        })
+
+        return this;
+    }
+
+    start(port?: number) {
+        super.start(port || this.config.expressPort);
+    }
+}
+```
+
+
+### Prerequisities
+
+To use spirit.io, you need :
+* Node.JS 6.X
+* At least one spirit.io connector. eg: spirit.io-mongodb-connector
+* The connectors associated runtimes. eg: MongoDB server
+
+### Installing
+
+Installing spirit.io is simple as :  
+
+```sh
+# to install the framework
+npm install --save spirit.io
+# to install connectors
+npm install --save spirit.io-mongodb-connector
+...
+```
+
+## Running the tests
+
+```sh
+npm test
+```
+
+## Authors
+
+* **Teddy Chambard** 
+
+See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
