@@ -79,7 +79,7 @@ export class MyApp extends Server {
 
 ### Prerequisities
 
-To use spirit.io, you need :
+To use spirit.io, you need :  
   * Node.JS 6.X
   * At least one spirit.io connector. eg: spirit.io-mongodb-connector
   * The connectors associated runtimes. eg: MongoDB server
