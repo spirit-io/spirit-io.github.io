@@ -5,56 +5,58 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ title }}</title>
+    <title>spirit.io</title>
 
-    <link rel="stylesheet" href="{{ baseUrl }}/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/highlight.dark.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/main.css">
+    <link rel="stylesheet" href="http://spirit-io.github.io/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://spirit-io.github.io/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://spirit-io.github.io/css/highlight.dark.css">
+    <link rel="stylesheet" href="http://spirit-io.github.io/css/main.css">
 </head>
 
 <body>
 
     <header class="navbar navbar-default navbar-fixed-top">
 
-        <a class="navbar-brand" href="{{ baseUrl }}/">
-            {{ title|default('The title') }}
+        <a class="navbar-brand" href="http://spirit-io.github.io/">
+            spirit.io
             <small class="hidden-xs hidden-sm">
-                {{ subTitle|default('This is the default subtitle!') }}
+                The typescript ORM framework you need to build your REST APIs.
             </small>
         </a>
     </header>
 
-    <main class="{{ menu ? 'container-fluid' : 'container' }}">
+    <main class="container-fluid">
         <div class="row">
 
-            {% if menu is defined %}
-
+            
             <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
 
                 <ul class="nav nav-pills nav-stacked">
-                    {% for itemId, item in menu.items %}
-                    <li class="{{ itemId == currentMenu ? 'active' }}">
-                        <a href="{{ item.absoluteUrl|default(baseUrl ~ '/' ~ item.relativeUrl) }}">
-                                        {{ item.text|raw }}
+                                        <li class="">
+                        <a href="http://spirit-io.github.io/index.html">
+                                        Getting started
                                     </a>
                     </li>
-                    {% endfor %}
-                </ul>
+                                        <li class="">
+                        <a href="connectors.html">
+                                        Connectors
+                                    </a>
+                    </li>
+                                    </ul>
 
             </nav>
 
-            {% endif %}
-
-            <section id="content" class="{{ menu ? 'col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10' : 'col-sm-12' }}">
-                {{ content|raw }}
+            
+            <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
+                <h1 id="connectors">Connectors</h1>
+<p>TODD</p>
             </section>
 
         </div>
     </main>
 
     <footer>
-        <div class="{{ menu ? 'container-fluid' : 'container' }}">
+        <div class="container-fluid">
             <p class="text-muted">
                 website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
             </p>
