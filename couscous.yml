@@ -9,6 +9,7 @@ baseUrl: https://spirit-io.github.io
 github:
   user: spirit-io
   repo: spirit-io.github.io
+branch: master
 title: spirit.io
 subTitle: The typescript ORM framework you need to build your REST APIs.
 # The left menu bar
