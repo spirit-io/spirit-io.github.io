@@ -4,7 +4,7 @@ template:
   index: index.md
 # Base URL of the published website (no "/" at the end!)
 # You are advised to set and use this variable to write your links in the HTML layouts
-baseUrl: http://spirit-io.github.io
+baseUrl: https://spirit-io.github.io
 # Used to link to the GitHub project
 github:
   user: spirit-io
