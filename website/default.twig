@@ -2,37 +2,59 @@
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
     <title>{{ title }}</title>
 
-    <link rel="stylesheet" href="{{ baseUrl }}/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/monokai-sublime.css">
-    <link rel="stylesheet" href="{{ baseUrl }}/css/main.css">
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ baseUrl }}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="{{ baseUrl }}/css/clean-blog.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ baseUrl }}/vendor/highlight/styles/monokai-sublime.css">
+    <!-- Custom Fonts -->
+    <link href="{{ baseUrl }}/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+        rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
+
 
 <body>
 
-    <header class="navbar navbar-default navbar-fixed-top">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="index.html">Home</a>
+            </div>
 
-        <a class="navbar-brand" href="{{ baseUrl }}/">
-            {{ title|default('The title') }}
-            <small class="hidden-xs hidden-sm">
-                {{ subTitle|default('This is the default subtitle!') }}
-            </small>
-        </a>
-    </header>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-    <main class="{{ menu ? 'container-fluid' : 'container' }}">
-        <div class="row">
+                {% if menu is defined %}
 
-            {% if menu is defined %}
 
-            <nav id="sidebar" class="col-sm-3 col-lg-2" role="navigation">
-
-                <ul class="nav nav-pills nav-stacked">
+                <ul class="nav navbar-nav navbar-right">
                     {% for itemId, item in menu.items %}
                     <li class="{{ itemId == currentMenu ? 'active' }}">
                         <a href="{{ item.absoluteUrl|default(baseUrl ~ '/' ~ item.relativeUrl) }}">
@@ -42,28 +64,96 @@
                     {% endfor %}
                 </ul>
 
-            </nav>
 
-            {% endif %}
 
-            <section id="content" class="{{ menu ? 'col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10' : 'col-sm-12' }}">
-                {{ content|raw }}
-            </section>
+                {% endif %}
 
+            </div>
+            <!-- /.navbar-collapse -->
         </div>
-    </main>
+        <!-- /.container -->
+    </nav>
 
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('{{ baseUrl }}/img/autumn.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="site-heading">
+                        <h1>{{title}}</h1>
+                        <hr class="small">
+                        <span class="subheading">{{subTitle}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <section id="content" class="{{ menu ? 'col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10' : 'col-sm-12' }}">
+                    {{ content|raw }}
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
     <footer>
-        <div class="{{ menu ? 'container-fluid' : 'container' }}">
-            <p class="text-muted">
-                website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
-            </p>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; spirit.io 2016</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+    <!-- jQuery -->
+    <script src="{{ baseUrl }}/vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ baseUrl }}/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="{{ baseUrl }}/js/jqBootstrapValidation.js"></script>
+    <script src="{{ baseUrl }}/js/contact_me.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="{{ baseUrl }}/js/clean-blog.min.js"></script>
+
+    <script src="{{ baseUrl }}/vendor/highlight/highlight.pack.js"></script>
 
     <script>
         $(function () {
