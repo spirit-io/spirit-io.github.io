@@ -90,21 +90,19 @@
 </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
 
-    <!-- Content Row -->
-    <div class="row">
-                <!-- Sidebar Column -->
-        <div class="col-md-3 scrollspy">
-            <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
-                                <li><a href="#what-is-spiritio-" class="list-group-item">What is spirit.io ?
-                </a></li>                 <li><a href="#getting-started" class="list-group-item">Getting started
-                </a></li>             </ul>
-        </div>
-                <!-- Content Column -->
-        <div id="content" class="col-md-9">
-            <h1 id="what-is-spiritio-">What is spirit.io ?</h1>
+<!-- Content Row -->
+<div class="row">
+        <!-- Sidebar Column -->
+    <div class="col-md-3 scrollspy">
+        <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+                        <li><a href="#what-is-spiritio-" class="list-group-item">What is spirit.io ?
+                </a></li>             <li><a href="#getting-started" class="list-group-item">Getting started
+                </a></li>         </ul>
+    </div>
+        <!-- Content Column -->
+    <div class="col-md-9">
+        <h1 id="what-is-spiritio-">What is spirit.io ?</h1>
 <p>spirit.io is an extensible Node.JS ORM framework written with Typescript.<br />
 Its goal is to simplify complex application development by writing simple decorated model classes.<br />
 This classes will be translated by decorators and schemas compiler analysis in order to produce models schemas that would be used by spirit.io connectors...<br />
@@ -226,63 +224,9 @@ npm install --save spirit.io-mongodb-connector
 <p>See also the list of <a href="https://github.com/your/project/contributors">contributors</a> who participated in this project.</p>
 <h2 id="license">License</h2>
 <p>This project is licensed under the MIT License - see the <a href="license.html">LICENSE.md</a> file for details</p>
-        </div>
     </div>
-    <!-- /.row -->
-
 </div>
-<!-- /.container -->
-
-<!-- jQuery -->
-<script src="https://spirit-io.github.io/vendor/jquery/jquery.min.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="https://spirit-io.github.io/vendor/bootstrap/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function () {
-        /* scrolling to element */
-        var headerHeight = $('#header').height() + $('#header-bottom-cap').height() + 10; //When the header position is fixed
-        $('a').click(function () {
-            var hashEle = $(this).attr('href').split('#');
-            if (hashEle.length > 1) {
-                if (hashEle[1] == 'top') {
-                    $('body, html').animate({
-                        scrollTop: 0
-                    }, 500);
-                } else {
-                    jQuery('body, html').animate({
-                        scrollTop: $('#' + hashEle[1]).offset().top - headerHeight
-                    }, 500);
-                }
-            };
-        })
-        // find element from url
-        hashname = window.location.hash.replace('#', '');
-        elem = $('#' + hashname);
-        if (hashname.length > 1) {
-            if (hashname == 'top') {
-                $('body, html').animate({
-                    scrollTop: 0
-                }, 200);
-            } else {
-                $('body, html').animate({
-                    scrollTop: $(elem).offset().top - headerHeight
-                }, 500);
-            }
-        };
-        /* END scrolling to element */
-
-        $('#nav').affix({
-            offset: {
-                top: $('#nav').offset().top
-            }
-        });
-    });
-
-</script>
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-
+<!-- /.row -->
 <hr>
 
 <!-- Footer -->
@@ -338,6 +282,51 @@ npm install --save spirit.io-mongodb-connector
         $("section>h1").wrap('<div class="page-header" />');
         // Syntax highlighting
         hljs.initHighlightingOnLoad();
+
+        /* scrolling to element */
+        var headerHeight = $('#header').height() + $('#header-bottom-cap').height() + 10; //When the header position is fixed
+        $('a').click(function () {
+            var hashEle = $(this).attr('href').split('#');
+            if (hashEle.length > 1) {
+                if (hashEle[1] == 'top') {
+                    $('body, html').animate({
+                        scrollTop: 0
+                    }, 500);
+                } else {
+                    jQuery('body, html').animate({
+                        scrollTop: $('#' + hashEle[1]).offset().top - headerHeight
+                    }, 500);
+                }
+            };
+        })
+        // find element from url
+        hashname = window.location.hash.replace('#', '');
+        elem = $('#' + hashname);
+        if (hashname.length > 1) {
+            if (hashname == 'top') {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 200);
+            } else {
+                $('body, html').animate({
+                    scrollTop: $(elem).offset().top - headerHeight
+                }, 500);
+            }
+        };
+        /* END scrolling to element */
+
+        $('#nav').affix({
+            offset: {
+                top: $('#nav').offset().top
+            }
+        });
+
+        $('#nav').affix({
+            offset: {
+                bottom: ($('footer').outerHeight(true) + $('.application').outerHeight(true)) + 40
+            }
+        });
+
     });
 </script>
 

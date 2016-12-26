@@ -1,10 +1,15 @@
-.affix {
-  top: 20px;
-  width: 213px;
+body {
+  position: relative;
 }
 
+.affix {
+    top: 20px;
+    width: 213px;
+}
+
+
 @media (min-width: 1200px) {
-  .affix {
-    width: 263px;
-  }         
+    .affix {
+        width: 263px;
+    }         
 }
