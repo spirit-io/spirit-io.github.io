@@ -14,9 +14,8 @@
     <!-- Bootstrap Core CSS -->
     <link href="https://spirit-io.github.io/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Theme CSS -->
     <link href="https://spirit-io.github.io/css/clean-blog.min.css" rel="stylesheet">
-
+    <link href="https://spirit-io.github.io/css/sidebar.css" rel="stylesheet">
     <link rel="stylesheet" href="https://spirit-io.github.io/vendor/highlight/styles/monokai-sublime.css">
     <!-- Custom Fonts -->
     <link href="https://spirit-io.github.io/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -56,12 +55,12 @@
                 <ul class="nav navbar-nav navbar-right">
                                         <li class="">
                         <a href="https://spirit-io.github.io/index.html">
-                                        Getting started
+                                        Home
                                     </a>
                     </li>
                                         <li class="">
-                        <a href="connectors.html">
-                                        Connectors
+                        <a href="https://spirit-io.github.io/getting-started.html">
+                                        Documentation
                                     </a>
                     </li>
                                     </ul>
@@ -78,25 +77,34 @@
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
     <header class="intro-header" style="background-image: url('https://spirit-io.github.io/img/autumn.jpg')">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="site-heading">
-                        <h1>spirit.io</h1>
-                        <hr class="small">
-                        <span class="subheading">The typescript ORM framework you need to build your REST APIs.</span>
-                    </div>
-                </div>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="site-heading">
+                <h1>spirit.io</h1>
+                <hr class="small">
+                <span class="subheading">The typescript ORM framework you need to build your REST APIs.</span>
             </div>
         </div>
-    </header>
+    </div>
+</div>
+</header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <section id="content" class="col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10">
-                    <h1 id="spiritio">spirit.io</h1>
+<!-- Main Content -->
+<div class="container">
+
+    <!-- Content Row -->
+    <div class="row">
+                <!-- Sidebar Column -->
+        <div class="col-md-3 scrollspy">
+            <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+                                <li><a href="#what-is-spiritio-" class="list-group-item">What is spirit.io ?
+                </a></li>                 <li><a href="#getting-started" class="list-group-item">Getting started
+                </a></li>             </ul>
+        </div>
+                <!-- Content Column -->
+        <div id="content" class="col-md-9">
+            <h1 id="what-is-spiritio-">What is spirit.io ?</h1>
 <p>spirit.io is an extensible Node.JS ORM framework written with Typescript.<br />
 Its goal is to simplify complex application development by writing simple decorated model classes.<br />
 This classes will be translated by decorators and schemas compiler analysis in order to produce models schemas that would be used by spirit.io connectors...<br />
@@ -105,61 +113,96 @@ At the end, the framework will produce CRUD operations usable from server side u
 <p>First of all, spirit.io is a framework, so you need to create your own project to be able to use it.<br />
 Then, it's important to understand that spirit.io uses <a href="https://github.com/Sage/f-promise">f-promise</a> API, so please take a look to its documentation to learn all the benefits you will encounter.  </p>
 <p>When using <code>spirit.io</code> with <code>Typescript</code>, the Typescript compilation is done by common typescript compiler <code>tsc</code>.<br />
-But the first entry point is that you need to create a standard Javascript file.  </p>
-<p><code>index.js</code>:  </p>
-<pre><code class="language-js">"use strict";
-const fpromise = require('f-promise');
+But the first entry point is that you need to create a spirit.io Server instance.  </p>
+<p>There are many ways to declare and start your spirit.io application :</p>
+<ul>
+<li>The simpler way using the <code>Server</code> class provided by the framework :</li>
+</ul>
+<p><code>simple.ts</code>:  </p>
+<pre><code class="language-ts">import { run } from 'f-promise';
+import { Server } from 'spirit.io/lib/application';
+import { Request, Response, NextFunction } from 'express';
 
-let MyApp = require('./lib/app').MyApp;
-let app = new MyApp().init();
-app.on('initialized', () =&gt; {
-    fpromise.run(() =&gt; {
-        app.start();
-    }).catch(err =&gt; {
-        console.error(err.stack);
+// Declare your configuration
+const config = {
+    port: 3000
+};
+
+//
+// f-promise encapsulation with `run` function is really important here
+// as spirit.io framework use `wait` function usually.
+//
+run(() =&gt; {
+    let server: Server = new Server(config);
+    server.init().start();
+    // ====================================
+    // Do what you want in your application
+    server.app.use('/test', function (req: Request, res: Response, next: NextFunction) {
+        res.end('It works !');
+        next();
     });
+    // ====================================
+}).catch(err =&gt; {
+    console.error(err);
 });</code></pre>
-<p><code>app.ts</code>:  </p>
-<pre><code class="language-ts">import { Server } from 'spirit.io/lib/application';
-import { MongodbConnector } from 'spirit.io-mongodb-connector/lib/connector';
-import { run } from 'f-promise';
+<ul>
+<li>The second and proper way using the events emitted by the <code>Server</code> instance :</li>
+</ul>
+<p><code>advanced.ts</code>:  </p>
+<pre><code class="language-ts">import { run } from 'f-promise';
+import { Server } from 'spirit.io/lib/application';
+import { Request, Response, NextFunction } from 'express';
 
-export class MyApp extends Server {
-    constructor(config?: any) {
-        if (!config) config = require('./config').config;
-        super(config);
-    }
+const config = {
+    port: 3000
+};
 
-    init() {
-        run(() =&gt; {
-            console.log("\n========== Initialize server begins ============");
+let server: Server = new Server(config);
 
-            // create a connector. Here mongodb for instance
-            let mongoConnector = new MongodbConnector(this.config.connectors.mongodb);
-            this.addConnector(mongoConnector);
-            console.log("Mongo connector config: " + JSON.stringify(mongoConnector.config, null, 2));
+// declare `initialized` event listener.
+server.on('initialized', function () {
+    run(() =&gt; {
+        console.log("========== Server initialized ============\n");
+        // ====================================
+        // Do what you want in your application after it has been initialized, 
+        // but before it would be started
+        server.app.use('/test', function (req: Request, res: Response, next: NextFunction) {
+            res.end('It works !');
+            next();
+        });
+        // ====================================
 
-            // register your own models
-            this.contract.registerModelsByPath(path.resolve(path.join(__dirname, './models')));
+        // Then start the server
+        server.start();
+    }).catch(err =&gt; {
+        console.error(err);
+    });
+});
 
-            // load models
-            super.init();
-            this.on('initialized', () =&gt; {
-                // Do your stuff here !!!
-                console.log("========== Server initialized ============\n");
-            });
+// declare `started` event listener.
+server.on('started', function () {
+    run(() =&gt; {
+        console.log("========== Server started ============\n");
+        // ====================================
+        // Do what you want in your application after it has been started
+        // ...
+        // ...
+    }).catch(err =&gt; {
+        console.error(err);
+    });
+});
 
-        }).catch(err =&gt; {
-            console.error(err.stack);
-        })
-
-        return this;
-    }
-
-    start(port?: number) {
-        super.start(port || this.config.expressPort);
-    }
-}</code></pre>
+// Here is the first entry point...
+//
+// f-promise encapsulation with `run` function is really important here
+// as spirit.io framework use `wait` function usually.
+//
+run(() =&gt; {
+    // Call `init` function to initialize your server
+    server.init();
+}).catch(err =&gt; {
+    console.error(err);
+});</code></pre>
 <h3 id="prerequisities">Prerequisities</h3>
 <p>To use spirit.io, you need :  </p>
 <ul>
@@ -183,72 +226,120 @@ npm install --save spirit.io-mongodb-connector
 <p>See also the list of <a href="https://github.com/your/project/contributors">contributors</a> who participated in this project.</p>
 <h2 id="license">License</h2>
 <p>This project is licensed under the MIT License - see the <a href="license.html">LICENSE.md</a> file for details</p>
-                </section>
-            </div>
         </div>
     </div>
+    <!-- /.row -->
 
-    <hr>
+</div>
+<!-- /.container -->
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
+<!-- jQuery -->
+<script src="https://spirit-io.github.io/vendor/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="https://spirit-io.github.io/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        /* scrolling to element */
+        var headerHeight = $('#header').height() + $('#header-bottom-cap').height() + 10; //When the header position is fixed
+        $('a').click(function () {
+            var hashEle = $(this).attr('href').split('#');
+            if (hashEle.length > 1) {
+                if (hashEle[1] == 'top') {
+                    $('body, html').animate({
+                        scrollTop: 0
+                    }, 500);
+                } else {
+                    jQuery('body, html').animate({
+                        scrollTop: $('#' + hashEle[1]).offset().top - headerHeight
+                    }, 500);
+                }
+            };
+        })
+        // find element from url
+        hashname = window.location.hash.replace('#', '');
+        elem = $('#' + hashname);
+        if (hashname.length > 1) {
+            if (hashname == 'top') {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 200);
+            } else {
+                $('body, html').animate({
+                    scrollTop: $(elem).offset().top - headerHeight
+                }, 500);
+            }
+        };
+        /* END scrolling to element */
+
+        $('#nav').affix({
+            offset: {
+                top: $('#nav').offset().top
+            }
+        });
+    });
+
+</script>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
+<hr>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="#">
+                            <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="fa-stack fa-lg">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; spirit.io 2016</p>
-                </div>
+                        </a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; spirit.io 2016</p>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- jQuery -->
-    <script src="https://spirit-io.github.io/vendor/jquery/jquery.min.js"></script>
+<!-- jQuery -->
+<script src="https://spirit-io.github.io/vendor/jquery/jquery.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://spirit-io.github.io/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="https://spirit-io.github.io/vendor/bootstrap/js/bootstrap.min.js"></script>
 
-    <!-- Contact Form JavaScript -->
-    <script src="https://spirit-io.github.io/js/jqBootstrapValidation.js"></script>
-    <script src="https://spirit-io.github.io/js/contact_me.js"></script>
+<!-- Theme JavaScript -->
+<script src="https://spirit-io.github.io/js/clean-blog.min.js"></script>
 
-    <!-- Theme JavaScript -->
-    <script src="https://spirit-io.github.io/js/clean-blog.min.js"></script>
+<script src="https://spirit-io.github.io/vendor/highlight/highlight.pack.js"></script>
 
-    <script src="https://spirit-io.github.io/vendor/highlight/highlight.pack.js"></script>
-
-    <script>
-        $(function () {
-            $("section>h1").wrap('<div class="page-header" />');
-            // Syntax highlighting
-            hljs.initHighlightingOnLoad();
-        });
-    </script>
+<script>
+    $(function () {
+        $("section>h1").wrap('<div class="page-header" />');
+        // Syntax highlighting
+        hljs.initHighlightingOnLoad();
+    });
+</script>
 
 </body>
 
