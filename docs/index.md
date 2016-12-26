@@ -1,4 +1,8 @@
-# spirit.io
+---
+layout: doc
+---
+
+# What is spirit.io ?
 
 spirit.io is an extensible Node.JS ORM framework written with Typescript.  
 Its goal is to simplify complex application development by writing simple decorated model classes.  
@@ -12,68 +16,102 @@ First of all, spirit.io is a framework, so you need to create your own project t
 Then, it's important to understand that spirit.io uses [f-promise](https://github.com/Sage/f-promise) API, so please take a look to its documentation to learn all the benefits you will encounter.  
 
 When using `spirit.io` with `Typescript`, the Typescript compilation is done by common typescript compiler `tsc`.  
-But the first entry point is that you need to create a standard Javascript file.  
+But the first entry point is that you need to create a spirit.io Server instance.  
 
-`index.js`:  
+There are many ways to declare and start your spirit.io application :
 
-```js
-"use strict";
-const fpromise = require('f-promise');
+* The simpler way using the `Server` class provided by the framework :
 
-let MyApp = require('./lib/app').MyApp;
-let app = new MyApp().init();
-app.on('initialized', () => {
-    fpromise.run(() => {
-        app.start();
-    }).catch(err => {
-        console.error(err.stack);
+`simple.ts`:  
+
+```ts
+import { run } from 'f-promise';
+import { Server } from 'spirit.io/lib/application';
+import { Request, Response, NextFunction } from 'express';
+
+// Declare your configuration
+const config = {
+    port: 3000
+};
+
+//
+// f-promise encapsulation with `run` function is really important here
+// as spirit.io framework use `wait` function usually.
+//
+run(() => {
+    let server: Server = new Server(config);
+    server.init().start();
+    // ====================================
+    // Do what you want in your application
+    server.app.use('/test', function (req: Request, res: Response, next: NextFunction) {
+        res.end('It works !');
+        next();
     });
+    // ====================================
+}).catch(err => {
+    console.error(err);
 });
 ```
 
-`app.ts`:  
+* The second and proper way using the events emitted by the `Server` instance :
+
+`advanced.ts`:  
 
 ```ts
-import { Server } from 'spirit.io/lib/application';
-import { MongodbConnector } from 'spirit.io-mongodb-connector/lib/connector';
 import { run } from 'f-promise';
+import { Server } from 'spirit.io/lib/application';
+import { Request, Response, NextFunction } from 'express';
 
-export class MyApp extends Server {
-    constructor(config?: any) {
-        if (!config) config = require('./config').config;
-        super(config);
-    }
+const config = {
+    port: 3000
+};
 
-    init() {
-        run(() => {
-            console.log("\n========== Initialize server begins ============");
-            
-            // create a connector. Here mongodb for instance
-            let mongoConnector = new MongodbConnector(this.config.connectors.mongodb);
-            this.addConnector(mongoConnector);
-            console.log("Mongo connector config: " + JSON.stringify(mongoConnector.config, null, 2));
-            
-            // register your own models
-            this.contract.registerModelsByPath(path.resolve(path.join(__dirname, './models')));
+let server: Server = new Server(config);
 
-            // load models
-            super.init();
-            this.on('initialized', () => {
-                // Do your stuff here !!!
-                console.log("========== Server initialized ============\n");
-            });
+// declare `initialized` event listener.
+server.on('initialized', function () {
+    run(() => {
+        console.log("========== Server initialized ============\n");
+        // ====================================
+        // Do what you want in your application after it has been initialized, 
+        // but before it would be started
+        server.app.use('/test', function (req: Request, res: Response, next: NextFunction) {
+            res.end('It works !');
+            next();
+        });
+        // ====================================
 
-        }).catch(err => {
-            console.error(err.stack);
-        })
+        // Then start the server
+        server.start();
+    }).catch(err => {
+        console.error(err);
+    });
+});
 
-        return this;
-    }
+// declare `started` event listener.
+server.on('started', function () {
+    run(() => {
+        console.log("========== Server started ============\n");
+        // ====================================
+        // Do what you want in your application after it has been started
+        // ...
+        // ...
+    }).catch(err => {
+        console.error(err);
+    });
+});
 
-    start(port?: number) {
-        super.start(port || this.config.expressPort);
-    }
-}
+// Here is the first entry point...
+//
+// f-promise encapsulation with `run` function is really important here
+// as spirit.io framework use `wait` function usually.
+//
+run(() => {
+    // Call `init` function to initialize your server
+    server.init();
+}).catch(err => {
+    console.error(err);
+});
 ```
 
 

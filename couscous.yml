@@ -22,11 +22,19 @@ include:
 # The left menu bar
 menu:
   items:
-    home:
-      text: Getting started
-      # You can use relative urls
+    start:
+      text: Home
       relativeUrl: index.html
-    connectors:
-      text: Connectors
-      # Or absolute urls
-      absoluteUrl: connectors.html
+    documentation:
+      text: Documentation
+      relativeUrl: getting-started.html
+
+# The documentation sidebar
+sidebar:
+  items:
+    what:
+      text: What is spirit.io ?
+      href: what-is-spiritio-
+    start:
+      text: Getting started
+      href: getting-started
