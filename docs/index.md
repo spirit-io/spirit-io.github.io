@@ -1,7 +1,3 @@
----
-layout: doc
----
-
 # What is spirit.io ?
 
 spirit.io is an extensible Node.JS ORM framework written with Typescript.  

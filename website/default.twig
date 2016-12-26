@@ -90,16 +90,25 @@
 </header>
 
 {% block content %}
-<!-- Main Content -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <section id="content" class="{{ topbar ? 'col-sm-offset-3 col-lg-offset-2 col-sm-9 col-lg-10' : 'col-sm-12' }}">
-                {{ content|raw }}
-            </section>
-        </div>
+
+<!-- Content Row -->
+<div class="row">
+    {% if sidebar is defined %}
+    <!-- Sidebar Column -->
+    <div class="col-md-3 scrollspy">
+        <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+            {% for item in sidebar.items %}
+            <li><a href="{{ '#' ~ item.href}}" class="list-group-item">{{ item.text|raw }}
+                </a></li> {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <!-- Content Column -->
+    <div class="col-md-9">
+        {{ content|raw }}
     </div>
 </div>
+<!-- /.row -->
 {% endblock %}
 <hr>
 
@@ -156,6 +165,51 @@
         $("section>h1").wrap('<div class="page-header" />');
         // Syntax highlighting
         hljs.initHighlightingOnLoad();
+
+        /* scrolling to element */
+        var headerHeight = $('#header').height() + $('#header-bottom-cap').height() + 10; //When the header position is fixed
+        $('a').click(function () {
+            var hashEle = $(this).attr('href').split('#');
+            if (hashEle.length > 1) {
+                if (hashEle[1] == 'top') {
+                    $('body, html').animate({
+                        scrollTop: 0
+                    }, 500);
+                } else {
+                    jQuery('body, html').animate({
+                        scrollTop: $('#' + hashEle[1]).offset().top - headerHeight
+                    }, 500);
+                }
+            };
+        })
+        // find element from url
+        hashname = window.location.hash.replace('#', '');
+        elem = $('#' + hashname);
+        if (hashname.length > 1) {
+            if (hashname == 'top') {
+                $('body, html').animate({
+                    scrollTop: 0
+                }, 200);
+            } else {
+                $('body, html').animate({
+                    scrollTop: $(elem).offset().top - headerHeight
+                }, 500);
+            }
+        };
+        /* END scrolling to element */
+
+        $('#nav').affix({
+            offset: {
+                top: $('#nav').offset().top
+            }
+        });
+
+        $('#nav').affix({
+            offset: {
+                bottom: ($('footer').outerHeight(true) + $('.application').outerHeight(true)) + 40
+            }
+        });
+
     });
 </script>
 
