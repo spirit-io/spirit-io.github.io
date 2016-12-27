@@ -97,6 +97,8 @@
     <div class="col-md-3 scrollspy">
         <ul id="nav" class="nav hidden-xs hidden-sm" data-spy="affix">
                         <li><a href="#what-is-spiritio-" class="list-group-item">What is spirit.io ?
+                </a></li>             <li><a href="#prerequisites" class="list-group-item">Prerequisites
+                </a></li>             <li><a href="#installing" class="list-group-item">Installing
                 </a></li>             <li><a href="#getting-started" class="list-group-item">Getting started
                 </a></li>         </ul>
     </div>
@@ -107,7 +109,22 @@
 Its goal is to simplify complex application development by writing simple decorated model classes.<br />
 This classes will be translated by decorators and schemas compiler analysis in order to produce models schemas that would be used by spirit.io connectors...<br />
 At the end, the framework will produce CRUD operations usable from server side using all the power of Typescript language, but also from front-end applications a REST API with Express routes will be automatically generated.  </p>
-<h2 id="getting-started">Getting Started</h2>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>To use spirit.io, you need :  </p>
+<ul>
+<li>Node.JS 6.X</li>
+<li>At least one spirit.io connector. eg: spirit.io-mongodb-connector</li>
+<li>The connectors associated runtimes. eg: MongoDB server</li>
+</ul>
+<h1 id="installing">Installing</h1>
+<p>Installing spirit.io is simple as :  </p>
+<pre><code class="language-sh"># to install the framework
+npm install --save spirit.io
+# to install connectors
+npm install --save spirit.io-mongodb-connector
+npm install --save spirit.io-redis-connector
+...</code></pre>
+<h1 id="getting-started">Getting Started</h1>
 <p>First of all, spirit.io is a framework, so you need to create your own project to be able to use it.<br />
 Then, it's important to understand that spirit.io uses <a href="https://github.com/Sage/f-promise">f-promise</a> API, so please take a look to its documentation to learn all the benefits you will encounter.  </p>
 <p>When using <code>spirit.io</code> with <code>Typescript</code>, the Typescript compilation is done by common typescript compiler <code>tsc</code>.<br />
@@ -201,29 +218,30 @@ run(() =&gt; {
 }).catch(err =&gt; {
     console.error(err);
 });</code></pre>
-<h3 id="prerequisities">Prerequisities</h3>
-<p>To use spirit.io, you need :  </p>
 <ul>
-<li>Node.JS 6.X</li>
-<li>At least one spirit.io connector. eg: spirit.io-mongodb-connector</li>
-<li>The connectors associated runtimes. eg: MongoDB server</li>
+<li>The third and probably the more common way that would be used is to create your own CustomServer class overriding the framework's <code>Server</code> class :
+Entry point can be implemented as the same way described in simple and advanced examples...</li>
 </ul>
-<h3 id="installing">Installing</h3>
-<p>Installing spirit.io is simple as :  </p>
-<pre><code class="language-sh"># to install the framework
-npm install --save spirit.io
-# to install connectors
-npm install --save spirit.io-mongodb-connector
-...</code></pre>
-<h2 id="running-the-tests">Running the tests</h2>
-<pre><code class="language-sh">npm test</code></pre>
-<h2 id="authors">Authors</h2>
-<ul>
-<li><strong>Teddy Chambard</strong> </li>
-</ul>
-<p>See also the list of <a href="https://github.com/your/project/contributors">contributors</a> who participated in this project.</p>
-<h2 id="license">License</h2>
-<p>This project is licensed under the MIT License - see the <a href="license.html">LICENSE.md</a> file for details</p>
+<p><code>custom.ts</code>:  </p>
+<pre><code class="language-ts">import { Server } from 'spirit.io/lib/application';
+
+export class CustomServer extends Server {
+    constructor(config?: any) {
+        if (!config) config = require('./config').config;
+        // Some specific stuff can be done in your constructor...
+        super(config);
+    }
+
+    init() {
+        // Here could be the place to do whatever you want before standard initialization...
+        return super.init();
+    }
+
+    start(port?: number) {
+        // Maybe do something before starting express application ?
+        super.start(port || this.config.port);
+    }
+}</code></pre>
     </div>
 </div>
 <!-- /.row -->
