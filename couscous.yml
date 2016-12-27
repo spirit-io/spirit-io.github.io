@@ -35,6 +35,12 @@ sidebar:
     what:
       text: What is spirit.io ?
       href: what-is-spiritio-
+    prerequisites:
+      text: Prerequisites
+      href: prerequisites
+    install:
+      text: Installing
+      href: installing
     start:
       text: Getting started
       href: getting-started

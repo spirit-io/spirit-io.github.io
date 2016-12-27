@@ -5,8 +5,27 @@ Its goal is to simplify complex application development by writing simple decora
 This classes will be translated by decorators and schemas compiler analysis in order to produce models schemas that would be used by spirit.io connectors...  
 At the end, the framework will produce CRUD operations usable from server side using all the power of Typescript language, but also from front-end applications a REST API with Express routes will be automatically generated.  
 
+# Prerequisites
 
-## Getting Started
+To use spirit.io, you need :  
+  * Node.JS 6.X
+  * At least one spirit.io connector. eg: spirit.io-mongodb-connector
+  * The connectors associated runtimes. eg: MongoDB server
+
+# Installing
+
+Installing spirit.io is simple as :  
+
+```sh
+# to install the framework
+npm install --save spirit.io
+# to install connectors
+npm install --save spirit.io-mongodb-connector
+npm install --save spirit.io-redis-connector
+...
+```
+
+# Getting Started
 
 First of all, spirit.io is a framework, so you need to create your own project to be able to use it.  
 Then, it's important to understand that spirit.io uses [f-promise](https://github.com/Sage/f-promise) API, so please take a look to its documentation to learn all the benefits you will encounter.  
@@ -110,38 +129,30 @@ run(() => {
 });
 ```
 
+* The third and probably the more common way that would be used is to create your own CustomServer class overriding the framework's `Server` class :
+Entry point can be implemented as the same way described in simple and advanced examples...
 
-### Prerequisities
+`custom.ts`:  
 
-To use spirit.io, you need :  
-  * Node.JS 6.X
-  * At least one spirit.io connector. eg: spirit.io-mongodb-connector
-  * The connectors associated runtimes. eg: MongoDB server
+```ts
+import { Server } from 'spirit.io/lib/application';
 
-### Installing
+export class CustomServer extends Server {
+    constructor(config?: any) {
+        if (!config) config = require('./config').config;
+        // Some specific stuff can be done in your constructor...
+        super(config);
+    }
 
-Installing spirit.io is simple as :  
+    init() {
+        // Here could be the place to do whatever you want before standard initialization...
+        return super.init();
+    }
 
-```sh
-# to install the framework
-npm install --save spirit.io
-# to install connectors
-npm install --save spirit.io-mongodb-connector
-...
+    start(port?: number) {
+        // Maybe do something before starting express application ?
+        super.start(port || this.config.port);
+    }
+}
 ```
 
-## Running the tests
-
-```sh
-npm test
-```
-
-## Authors
-
-  * **Teddy Chambard** 
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
